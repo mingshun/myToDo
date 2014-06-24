@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">myToDo</string>
+    <string name="title_section1">未完成</string>
+    <string name="title_section2">已完成</string>
+    <string name="title_section3">全部</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
