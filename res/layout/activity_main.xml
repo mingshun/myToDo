@@ -1,8 +1,56 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.gutspot.apps.android.mytodo.MainActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame" >
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/button_unfinished_todo"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="-5dp"
+            android:layout_marginRight="-5dp"
+            android:text="@string/unfinished" />
+
+        <Button
+            android:id="@+id/button_finished_todo"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="-5dp"
+            android:layout_marginRight="-5dp"
+            android:layout_toRightOf="@+id/button_unfinished_todo"
+            android:text="@string/finished" />
+
+        <Button
+            android:id="@+id/button_all_todo"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="-5dp"
+            android:layout_toRightOf="@+id/button_finished_todo"
+            android:text="@string/all" />
+
+        <ImageButton
+            android:id="@+id/button_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="-5dp"
+            android:contentDescription="@string/sort"
+            android:src="@drawable/ic_action_collapse" />
+    </RelativeLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
+</LinearLayout>

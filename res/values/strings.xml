@@ -6,5 +6,13 @@
     <string name="title_section2">已完成</string>
     <string name="title_section3">全部</string>
     <string name="action_settings">Settings</string>
+    
+    <string name="unfinished">未完成</string>
+    <string name="finished">已完成</string>
+    <string name="all">全部</string>
+    <string name="sort">排序</string>
+    
+    <string name="action_add_todo">添加ToDo</string>
+    <string name="action_search_todo">搜索ToDo</string>
 
 </resources>
