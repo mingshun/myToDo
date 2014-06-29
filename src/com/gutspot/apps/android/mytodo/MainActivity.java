@@ -1,7 +1,7 @@
 package com.gutspot.apps.android.mytodo;
 
-import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,17 +12,20 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-    private int pressedCategoryButton;
+    private int pressedCategoryButton = R.id.button_unfinished_todo;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-
         setCategoryButtonListener();
+        initPressedCategoryButton();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
         initPressedCategoryButton();
     }
 
@@ -36,9 +39,8 @@ public class MainActivity extends Activity {
     }
 
     private void initPressedCategoryButton() {
-        pressedCategoryButton = R.id.button_unfinished_todo;
-        Button buttons = (Button) this.findViewById(pressedCategoryButton);
-        buttons.setPressed(true);
+        Button button = (Button) this.findViewById(pressedCategoryButton);
+        button.setPressed(true);
     }
 
     @Override
@@ -57,6 +59,8 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
         switch (id) {
         case R.id.action_add_todo:
+            Intent addToDoIntent = new Intent(this, AddToDoActivity.class);
+            startActivity(addToDoIntent);
             return true;
 
         case R.id.action_search_todo:
