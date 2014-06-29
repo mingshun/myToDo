@@ -12,7 +12,8 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-    private int pressedCategoryButton = R.id.button_unfinished_todo;;
+    private int pressedCategoryButton = R.id.button_unfinished_todo;
+    private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,20 +28,6 @@ public class MainActivity extends Activity {
     protected void onRestart() {
         super.onRestart();
         initPressedCategoryButton();
-    }
-
-    private void setCategoryButtonListener() {
-        int[] buttonIds = new int[] { R.id.button_unfinished_todo, R.id.button_finished_todo, R.id.button_all_todo };
-        OnTouchListener listener = new CategoryButtonsClickListener(buttonIds);
-        for (int buttonId : buttonIds) {
-            Button button = (Button) this.findViewById(buttonId);
-            button.setOnTouchListener(listener);
-        }
-    }
-
-    private void initPressedCategoryButton() {
-        Button button = (Button) this.findViewById(pressedCategoryButton);
-        button.setPressed(true);
     }
 
     @Override
@@ -70,6 +57,20 @@ public class MainActivity extends Activity {
             return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    private void setCategoryButtonListener() {
+        int[] buttonIds = new int[] { R.id.button_unfinished_todo, R.id.button_finished_todo, R.id.button_all_todo };
+        OnTouchListener listener = new CategoryButtonsClickListener(buttonIds);
+        for (int buttonId : buttonIds) {
+            Button button = (Button) this.findViewById(buttonId);
+            button.setOnTouchListener(listener);
+        }
+    }
+
+    private void initPressedCategoryButton() {
+        Button button = (Button) this.findViewById(pressedCategoryButton);
+        button.setPressed(true);
     }
 
     class CategoryButtonsClickListener implements OnTouchListener {
