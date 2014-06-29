@@ -5,8 +5,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.Button;
 
 public class MainActivity extends Activity {
+
+    private int pressedCategoryButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,16 +22,23 @@ public class MainActivity extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
 
+        setCategoryButtonListener();
+        initPressedCategoryButton();
     }
 
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-
+    private void setCategoryButtonListener() {
+        int[] buttonIds = new int[] { R.id.button_unfinished_todo, R.id.button_finished_todo, R.id.button_all_todo };
+        OnTouchListener listener = new CategoryButtonsClickListener(buttonIds);
+        for (int buttonId : buttonIds) {
+            Button button = (Button) this.findViewById(buttonId);
+            button.setOnTouchListener(listener);
+        }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
+    private void initPressedCategoryButton() {
+        pressedCategoryButton = R.id.button_unfinished_todo;
+        Button buttons = (Button) this.findViewById(pressedCategoryButton);
+        buttons.setPressed(true);
     }
 
     @Override
@@ -53,6 +66,28 @@ public class MainActivity extends Activity {
             return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    class CategoryButtonsClickListener implements OnTouchListener {
+
+        private int[] buttonIds;
+
+        public CategoryButtonsClickListener(int[] buttonIds) {
+            this.buttonIds = buttonIds;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            for (int buttonId : buttonIds) {
+                if (v.getId() != buttonId) {
+                    Button button = (Button) MainActivity.this.findViewById(buttonId);
+                    button.setPressed(false);
+                }
+            }
+            ((Button) v).setPressed(true);
+            pressedCategoryButton = v.getId();
+            return true;
+        }
     }
 
 }
