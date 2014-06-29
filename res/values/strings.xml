@@ -11,5 +11,17 @@
     
     <string name="title_activity_add_to_do">新建ToDo</string>
     <string name="action_save_todo">保存ToDo</string>
-
+    <string name="text_color">文字颜色：</string>
+    <string name="background_color">背景颜色：</string>
+    <string name="new_todo_content_input_hint">请输入内容</string>
+    <string name="text_color_black">黑</string>
+    <string name="text_color_red">红</string>
+    <string name="text_color_green">绿</string>
+    <string name="text_color_blue">蓝</string>
+    <string name="background_color_yellow">黄</string>
+    <string name="background_color_orange">橙</string>
+    <string name="background_color_red">红</string>
+    <string name="background_color_green">绿</string>
+    <string name="background_color_blue">蓝</string>
+    
 </resources>

@@ -19,40 +19,44 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="文字颜色："
+            android:text="@string/text_color"
             android:textSize="18sp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_text_color_black"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="#000000" />
+            android:background="#000000"
+            android:contentDescription="@string/text_color_black" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_text_color_red"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="#ee0000" />
+            android:background="#ee0000"
+            android:contentDescription="@string/text_color_red" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_text_color_green"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="#008800" />
+            android:background="#008800"
+            android:contentDescription="@string/text_color_green" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_text_color_blue"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="#0000ff" />
+            android:background="#0000ff"
+            android:contentDescription="@string/text_color_blue" />
     </LinearLayout>
 
     <LinearLayout
@@ -64,58 +68,62 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="背景颜色："
+            android:text="@string/background_color"
             android:textSize="18sp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_background_color_yellow"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="#f4e0a5" />
+            android:background="#f4e0a5"
+            android:contentDescription="@string/background_color_yellow" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_background_color_orage"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="#f1d0a6" />
+            android:background="#f1d0a6"
+            android:contentDescription="@string/background_color_orange" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_background_color_red"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="#ecd0ca" />
+            android:background="#ecd0ca"
+            android:contentDescription="@string/background_color_red" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_background_color_green"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="#dde3ba" />
+            android:background="#dde3ba"
+            android:contentDescription="@string/background_color_green" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_background_color_blue"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="#d0dce3" />
+            android:background="#d0dce3"
+            android:contentDescription="@string/background_color_blue" />
     </LinearLayout>
 
     <EditText
         android:id="@+id/edit_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f4e0a5"
         android:gravity="top"
+        android:hint="@string/new_todo_content_input_hint"
         android:padding="5dp"
-        android:text="新ToDo"
         android:textSize="20sp" />
 
 </LinearLayout>

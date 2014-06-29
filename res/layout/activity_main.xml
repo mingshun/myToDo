@@ -45,7 +45,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="-5dp"
             android:contentDescription="@string/sort"
-            android:src="@drawable/ic_action_collapse" />
+            android:src="@drawable/ic_action_collapse_light" />
     </RelativeLayout>
 
     <ListView
