@@ -4,11 +4,9 @@ import java.util.Date;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +20,7 @@ import com.gutspot.apps.android.mytodo.dao.MemoDAO;
 import com.gutspot.apps.android.mytodo.dao.ToDoDAO;
 import com.gutspot.apps.android.mytodo.model.Memo;
 import com.gutspot.apps.android.mytodo.model.ToDo;
+import com.gutspot.apps.android.mytodo.utils.AlertUtil;
 
 public class AddToDoMemoActivity extends Activity {
 
@@ -66,10 +65,7 @@ public class AddToDoMemoActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog dialog = new AlertDialog.Builder(this).create();
-        dialog.setTitle("提示");
-        dialog.setMessage("是否放弃保存此ToDo？");
-        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        String message = "是否放弃保存" + name + "？";
 
         String yesLabel = "是";
         DialogInterface.OnClickListener yesListener = new DialogInterface.OnClickListener() {
@@ -89,15 +85,7 @@ public class AddToDoMemoActivity extends Activity {
             }
         };
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            dialog.setButton(DialogInterface.BUTTON_POSITIVE, yesLabel, yesListener);
-            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, noLabel, noListener);
-        } else {
-            dialog.setButton(DialogInterface.BUTTON_POSITIVE, noLabel, noListener);
-            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, yesLabel, yesListener);
-        }
-
-        dialog.show();
+        AlertUtil.show(this, message, yesLabel, yesListener, noLabel, noListener);
     }
 
     @Override
