@@ -2,7 +2,10 @@ package com.gutspot.apps.android.mytodo;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +29,42 @@ public class AddToDoActivity extends Activity {
 
         setColorButtonListeners();
         initPressedColorButton();
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
+        dialog.setTitle("提示");
+        dialog.setMessage("是否放弃保存此ToDo？");
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+
+        String yesLabel = "是";
+        DialogInterface.OnClickListener yesListener = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AddToDoActivity.this.finish();
+            }
+        };
+
+        String noLabel = "否";
+        DialogInterface.OnClickListener noListener = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        };
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            dialog.setButton(DialogInterface.BUTTON_POSITIVE, yesLabel, yesListener);
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, noLabel, noListener);
+        } else {
+            dialog.setButton(DialogInterface.BUTTON_POSITIVE, noLabel, noListener);
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, yesLabel, yesListener);
+        }
+        
+        dialog.show();
     }
 
     @Override
@@ -133,7 +172,7 @@ public class AddToDoActivity extends Activity {
                     b.setImageResource(android.R.color.transparent);
                 }
             }
-            
+
             ColorDrawable color = (ColorDrawable) button.getBackground();
             EditText edit = (EditText) AddToDoActivity.this.findViewById(R.id.edit_content);
             edit.setBackgroundColor(color.getColor());
