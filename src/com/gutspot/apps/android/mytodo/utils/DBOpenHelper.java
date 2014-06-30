@@ -11,14 +11,15 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_TODO_SQL = "CREATE TABLE `todo` ("
             + "`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-            + "`finish` INTEGER NOT NULL DEFAULT 0,"
-            + "`finished` INTEGET DEFAULT 0,"
-            + "`note` TEXT DEFAULT '');";
+            + "`created` INTEGER NOT NULL,"
+            + "`finished` INTEGET DEFAULT -1);";
 
-    private static final String CREATE_TABLE_TODO_CONTENT_SQL = "CREATE TABLE `todo_content` ("
+    private static final String CREATE_TABLE_MEMO_SQL = "CREATE TABLE `memo` ("
             + "`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
             + "`todo_id` INTEGER NOT NULL,"
             + "`content` TEXT NOT NULL,"
+            + "`text_color` TEXT NOT NULL,"
+            + "`background_color` TEXT NOT NULL,"
             + "`created` INTEGER NOT NULL);";
 
     private static final String CREATE_TABLE_NOTICE_SQL = "CREATE TABLE `notice` ("
@@ -33,7 +34,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_TODO_SQL);
-        db.execSQL(CREATE_TABLE_TODO_CONTENT_SQL);
+        db.execSQL(CREATE_TABLE_MEMO_SQL);
         db.execSQL(CREATE_TABLE_NOTICE_SQL);
 
     }

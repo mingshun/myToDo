@@ -4,20 +4,15 @@ import java.util.Date;
 
 public class ToDo extends AbstractEntity {
     /**
-     * Represents the state of todo, <code>ture</code> for finished and
-     * <code>false</code> for unfinished.
+     * Represents the create timestamp of the todo.
      */
-    private boolean finish;
+    private Date created;
 
     /**
-     * Represents the finish timestamp of the todo.
+     * Represents the finish timestamp of the todo. <code>-1</code> means
+     * unfinished.
      */
     private Date finished;
-
-    /**
-     * Represents the note of the todo.
-     */
-    private String note;
 
     public ToDo() {
 
@@ -27,12 +22,12 @@ public class ToDo extends AbstractEntity {
         super(id);
     }
 
-    public boolean isFinish() {
-        return finish;
+    public Date getCreated() {
+        return created;
     }
 
-    public void setFinish(boolean finish) {
-        this.finish = finish;
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     public Date getFinished() {
@@ -41,14 +36,6 @@ public class ToDo extends AbstractEntity {
 
     public void setFinished(Date finished) {
         this.finished = finished;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
 }
