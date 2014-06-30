@@ -1,9 +1,12 @@
 package com.gutspot.apps.android.mytodo;
 
+import java.util.Date;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,19 +16,49 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
-public class AddToDoActivity extends Activity {
+import com.gutspot.apps.android.mytodo.dao.MemoDAO;
+import com.gutspot.apps.android.mytodo.dao.ToDoDAO;
+import com.gutspot.apps.android.mytodo.model.Memo;
+import com.gutspot.apps.android.mytodo.model.ToDo;
+
+public class AddToDoMemoActivity extends Activity {
 
     private int pressedTextColorButtonId = R.id.button_text_color_black;
     private int pressedBackgroundButtonId = R.id.button_background_color_yellow;
 
+    private int type;
+    private String name;
+    private Long toDoId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_to_do);
+        setContentView(R.layout.activity_add_to_do_memo);
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = this.getIntent();
+        type = intent.getIntExtra("type", -1);
+        switch (type) {
+        case 1:
+            name = "ToDo";
+            toDoId = null;
+            break;
+        case 2:
+            name = "Memo";
+            toDoId = intent.getLongExtra("todo_id", -1);
+            break;
+
+        default:
+            Toast.makeText(this, "无效参数type", Toast.LENGTH_SHORT).show();
+            this.finish();
+            return;
+        }
+
+        this.setTitle("添加" + name);
 
         setColorButtonListeners();
         initPressedColorButton();
@@ -43,7 +76,7 @@ public class AddToDoActivity extends Activity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                AddToDoActivity.this.finish();
+                AddToDoMemoActivity.this.finish();
             }
         };
 
@@ -63,7 +96,7 @@ public class AddToDoActivity extends Activity {
             dialog.setButton(DialogInterface.BUTTON_POSITIVE, noLabel, noListener);
             dialog.setButton(DialogInterface.BUTTON_NEGATIVE, yesLabel, yesListener);
         }
-        
+
         dialog.show();
     }
 
@@ -87,6 +120,7 @@ public class AddToDoActivity extends Activity {
             return true;
 
         case R.id.action_save_todo:
+            saveData();
             return true;
 
         default:
@@ -123,9 +157,47 @@ public class AddToDoActivity extends Activity {
         pressedBackgroundColorButton.setImageResource(R.drawable.ic_action_accept_light);
         ColorDrawable backgroundColor = (ColorDrawable) pressedBackgroundColorButton.getBackground();
 
-        EditText edit = (EditText) AddToDoActivity.this.findViewById(R.id.edit_content);
+        EditText edit = (EditText) AddToDoMemoActivity.this.findViewById(R.id.edit_content);
         edit.setTextColor(textColor.getColor());
         edit.setBackgroundColor(backgroundColor.getColor());
+    }
+
+    private void saveData() {
+        switch (type) {
+        case 1:
+            ToDo toDo = new ToDo();
+            toDo.setCreated(new Date());
+            ToDoDAO toDoDAO = new ToDoDAO(this);
+            toDoId = toDoDAO.create(toDo);
+            if (toDoId == -1) {
+                Toast.makeText(this, "保存ToDo失败", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+
+        case 2:
+            EditText edit = (EditText) this.findViewById(R.id.edit_content);
+            ColorDrawable backgroundDrawable = (ColorDrawable) edit.getBackground();
+            Memo memo = new Memo();
+            memo.setToDoId(toDoId);
+            memo.setContent(edit.getText().toString());
+            memo.setTextColor(edit.getCurrentTextColor());
+            memo.setBackgroundColor(backgroundDrawable.getColor());
+            memo.setCreated(new Date());
+            MemoDAO memoDAO = new MemoDAO(this);
+            long memoId = memoDAO.create(memo);
+            if (memoId == -1) {
+                Toast.makeText(this, "保存Memo失败", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+
+        default:
+
+        }
+
+        Toast.makeText(this, "保存" + name + "成功", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     class ChangeTextColorListener implements OnClickListener {
@@ -142,13 +214,13 @@ public class AddToDoActivity extends Activity {
             button.setImageResource(R.drawable.ic_action_accept);
             for (int buttonId : buttonIds) {
                 if (button.getId() != buttonId) {
-                    ImageButton b = (ImageButton) AddToDoActivity.this.findViewById(buttonId);
+                    ImageButton b = (ImageButton) AddToDoMemoActivity.this.findViewById(buttonId);
                     b.setImageResource(android.R.color.transparent);
                 }
             }
 
             ColorDrawable color = (ColorDrawable) button.getBackground();
-            EditText edit = (EditText) AddToDoActivity.this.findViewById(R.id.edit_content);
+            EditText edit = (EditText) AddToDoMemoActivity.this.findViewById(R.id.edit_content);
             edit.setTextColor(color.getColor());
             pressedTextColorButtonId = button.getId();
         }
@@ -168,13 +240,13 @@ public class AddToDoActivity extends Activity {
             button.setImageResource(R.drawable.ic_action_accept_light);
             for (int buttonId : buttonIds) {
                 if (button.getId() != buttonId) {
-                    ImageButton b = (ImageButton) AddToDoActivity.this.findViewById(buttonId);
+                    ImageButton b = (ImageButton) AddToDoMemoActivity.this.findViewById(buttonId);
                     b.setImageResource(android.R.color.transparent);
                 }
             }
 
             ColorDrawable color = (ColorDrawable) button.getBackground();
-            EditText edit = (EditText) AddToDoActivity.this.findViewById(R.id.edit_content);
+            EditText edit = (EditText) AddToDoMemoActivity.this.findViewById(R.id.edit_content);
             edit.setBackgroundColor(color.getColor());
             pressedBackgroundButtonId = button.getId();
         }

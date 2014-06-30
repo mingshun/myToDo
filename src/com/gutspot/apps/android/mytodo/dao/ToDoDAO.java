@@ -15,7 +15,7 @@ public class ToDoDAO extends AbstractDAO<ToDo> {
     private static final String COLUMN_CREATED = "created";
     private static final String COLUMN_FINISHED = "finished";
 
-    protected ToDoDAO(Context context) {
+    public ToDoDAO(Context context) {
         super(context, TABLE_NAME);
     }
 
@@ -23,8 +23,11 @@ public class ToDoDAO extends AbstractDAO<ToDo> {
     protected ContentValues createValues(ToDo entity, boolean create) {
         ContentValues values = new ContentValues();
 
-        values.put(COLUMN_CREATED, entity.getCreated().getTime());
-        values.put(COLUMN_FINISHED, entity.getFinished().getTime());
+        if (create) {
+            values.put(COLUMN_CREATED, entity.getCreated().getTime());
+        }
+        Long finished = entity.getFinished() == null ? null : entity.getFinished().getTime();
+        values.put(COLUMN_FINISHED, finished);
 
         return values;
     }

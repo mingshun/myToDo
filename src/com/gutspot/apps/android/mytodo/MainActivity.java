@@ -67,8 +67,9 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
         switch (id) {
         case R.id.action_add_todo:
-            Intent addToDoIntent = new Intent(this, AddToDoActivity.class);
-            startActivity(addToDoIntent);
+            Intent addToDoMemoIntent = new Intent(this, AddToDoMemoActivity.class);
+            addToDoMemoIntent.putExtra("type", 1);
+            startActivity(addToDoMemoIntent);
             return true;
 
         case R.id.action_search_todo:

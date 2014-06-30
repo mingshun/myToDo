@@ -18,7 +18,7 @@ public class MemoDAO extends AbstractDAO<Memo> {
     private static final String COLUMN_BACKGROUND_COLOR = "background_color";
     private static final String COLUMN_CREATED = "created";
 
-    protected MemoDAO(Context context) {
+    public MemoDAO(Context context) {
         super(context, TABLE_NAME);
     }
 
@@ -30,7 +30,9 @@ public class MemoDAO extends AbstractDAO<Memo> {
         values.put(COLUMN_CONTENT, entity.getContent());
         values.put(COLUMN_TEXT_COLOR, entity.getTextColor());
         values.put(COLUMN_BACKGROUND_COLOR, entity.getBackgroundColor());
-        values.put(COLUMN_CREATED, entity.getCreated().getTime());
+        if (create) {
+            values.put(COLUMN_CREATED, entity.getCreated().getTime());
+        }
 
         return values;
     }
@@ -41,8 +43,8 @@ public class MemoDAO extends AbstractDAO<Memo> {
 
         memo.setToDoId(cursor.getLong(cursor.getColumnIndex(COLUMN_TODO_ID)));
         memo.setContent(cursor.getString(cursor.getColumnIndex(COLUMN_CONTENT)));
-        memo.setTextColor(cursor.getString(cursor.getColumnIndex(COLUMN_TEXT_COLOR)));
-        memo.setBackgroundColor(cursor.getString(cursor.getColumnIndex(COLUMN_BACKGROUND_COLOR)));
+        memo.setTextColor(cursor.getInt(cursor.getColumnIndex(COLUMN_TEXT_COLOR)));
+        memo.setBackgroundColor(cursor.getInt(cursor.getColumnIndex(COLUMN_BACKGROUND_COLOR)));
         memo.setCreated(new Date(cursor.getLong(cursor.getColumnIndex(COLUMN_CREATED))));
 
         return memo;

@@ -9,7 +9,7 @@
     <string name="action_add_todo">添加ToDo</string>
     <string name="action_search_todo">搜索ToDo</string>
     
-    <string name="title_activity_add_to_do">新建ToDo</string>
+    <string name="title_activity_add_to_do">添加ToDo</string>
     <string name="action_save_todo">保存ToDo</string>
     <string name="text_color">文字颜色：</string>
     <string name="background_color">背景颜色：</string>

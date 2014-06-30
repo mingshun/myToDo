@@ -18,8 +18,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + "`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
             + "`todo_id` INTEGER NOT NULL,"
             + "`content` TEXT NOT NULL,"
-            + "`text_color` TEXT NOT NULL,"
-            + "`background_color` TEXT NOT NULL,"
+            + "`text_color` INTEGER NOT NULL,"
+            + "`background_color` INTEGER NOT NULL,"
             + "`created` INTEGER NOT NULL);";
 
     private static final String CREATE_TABLE_NOTICE_SQL = "CREATE TABLE `notice` ("

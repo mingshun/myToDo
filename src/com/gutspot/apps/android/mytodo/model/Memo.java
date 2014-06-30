@@ -16,12 +16,12 @@ public class Memo extends AbstractEntity {
     /**
      * Represents the text color of the memo.
      */
-    private String textColor;
+    private int textColor;
 
     /**
      * Represents the background color of the memo.
      */
-    private String backgroundColor;
+    private int backgroundColor;
 
     /**
      * Represents the create timestamp of the memo.
@@ -52,19 +52,19 @@ public class Memo extends AbstractEntity {
         this.content = content;
     }
 
-    public String getTextColor() {
+    public int getTextColor() {
         return textColor;
     }
 
-    public void setTextColor(String textColor) {
+    public void setTextColor(int textColor) {
         this.textColor = textColor;
     }
 
-    public String getBackgroundColor() {
+    public int getBackgroundColor() {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(String backgroundColor) {
+    public void setBackgroundColor(int backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 

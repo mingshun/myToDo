@@ -15,7 +15,7 @@ public class NoticeDAO extends AbstractDAO<Notice> {
     private static final String COLUMN_TODO_ID = "todo_id";
     private static final String COLUMN_TIME = "time";
 
-    protected NoticeDAO(Context context) {
+    public NoticeDAO(Context context) {
         super(context, TABLE_NAME);
     }
 
