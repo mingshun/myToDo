@@ -8,7 +8,6 @@
     <string name="sort">排序</string>
     <string name="action_add_todo">添加ToDo</string>
     <string name="action_search_todo">搜索ToDo</string>
-    
     <string name="title_activity_add_to_do">添加ToDo</string>
     <string name="action_save_todo">保存ToDo</string>
     <string name="text_color">文字颜色：</string>
@@ -23,5 +22,8 @@
     <string name="background_color_red">红</string>
     <string name="background_color_green">绿</string>
     <string name="background_color_blue">蓝</string>
-    
+    <string name="title_activity_to_do">ToDo详情</string>
+    <string name="action_add_memo">添加Memo</string>
+    <string name="action_show_alerts">提醒</string>
+
 </resources>

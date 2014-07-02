@@ -29,7 +29,7 @@ public class AddToDoMemoActivity extends Activity {
 
     private int type;
     private String name;
-    private Long toDoId;
+    private long toDoId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class AddToDoMemoActivity extends Activity {
         switch (type) {
         case 1:
             name = "ToDo";
-            toDoId = null;
+            toDoId = -1;
             break;
         case 2:
             name = "Memo";
@@ -92,7 +92,7 @@ public class AddToDoMemoActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.add_to_do, menu);
+        getMenuInflater().inflate(R.menu.add_to_do_memo, menu);
         return true;
     }
 
@@ -184,8 +184,13 @@ public class AddToDoMemoActivity extends Activity {
 
         }
 
-        Toast.makeText(this, "保存" + name + "成功", Toast.LENGTH_SHORT).show();
         finish();
+        Toast.makeText(this, "保存" + name + "成功", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ToDoActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("todo_id", toDoId);
+        this.startActivity(intent);
+
     }
 
     class ChangeTextColorListener implements OnClickListener {

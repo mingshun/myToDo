@@ -24,7 +24,16 @@
         </activity>
         <activity
             android:name="com.gutspot.apps.android.mytodo.AddToDoMemoActivity"
-            android:label="@string/title_activity_add_to_do" >
+            android:label="@string/title_activity_add_to_do"
+            android:parentActivityName="com.gutspot.apps.android.mytodo.ToDoActivity" >
+            <meta-data
+                android:name="android.PARENT_ACTIVITY"
+                android:value="com.gutspot.apps.android.mytodo.ToDoActivity" />
+        </activity>
+        <activity
+            android:name="com.gutspot.apps.android.mytodo.ToDoActivity"
+            android:label="@string/title_activity_to_do"
+            android:parentActivityName="com.gutspot.apps.android.mytodo.MainActivity" >
             <meta-data
                 android:name="android.PARENT_ACTIVITY"
                 android:value="com.gutspot.apps.android.mytodo.MainActivity" />

@@ -21,15 +21,35 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        android.util.Log.d("MainActivity", this.toString());
+
+        if (savedInstanceState != null) {
+            pressedCategoryButton = savedInstanceState.getInt("pressed_category_button");
+            android.util.Log.d("MainActivity", "pressedCategoryButton: " + pressedCategoryButton);
+        }
 
         setCategoryButtonListener();
         initPressedCategoryButton();
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        pressedCategoryButton = savedInstanceState.getInt("pressed_category_button");
+        android.util.Log.d("MainActivity", "pressedCategoryButton: " + pressedCategoryButton);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("pressed_category_button", pressedCategoryButton);
+    }
+
+    @Override
     protected void onRestart() {
         super.onRestart();
         initPressedCategoryButton();
+        android.util.Log.d("MainActivity", this.toString());
     }
 
     @Override
