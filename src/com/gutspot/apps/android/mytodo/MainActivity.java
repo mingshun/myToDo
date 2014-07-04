@@ -1,5 +1,8 @@
 package com.gutspot.apps.android.mytodo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,12 +13,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import com.gutspot.apps.android.mytodo.adapter.ToDoAdapter;
+import com.gutspot.apps.android.mytodo.adapter.ToDoAdapter.ToDoItem;
+import com.gutspot.apps.android.mytodo.dao.MemoDAO;
+import com.gutspot.apps.android.mytodo.dao.ToDoDAO;
+import com.gutspot.apps.android.mytodo.model.Memo;
+import com.gutspot.apps.android.mytodo.model.ToDo;
 
 public class MainActivity extends Activity {
 
     private int pressedCategoryButton = R.id.button_unfinished_todo;
     private boolean doubleBackToExitPressedOnce = false;
+
+    private ListView toDoListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +43,8 @@ public class MainActivity extends Activity {
 
         setCategoryButtonListener();
         initPressedCategoryButton();
+
+        initToDoList();
     }
 
     @Override
@@ -49,7 +64,13 @@ public class MainActivity extends Activity {
     protected void onRestart() {
         super.onRestart();
         initPressedCategoryButton();
-        android.util.Log.d("MainActivity", this.toString());
+        if (toDoListView != null) {
+            List<ToDoItem> data = loadData();
+            ToDoAdapter adapter = new ToDoAdapter(this, data);
+            toDoListView.setAdapter(adapter);
+        }
+
+        android.util.Log.d("MainActivity.onRestart", this.toString());
     }
 
     @Override
@@ -113,6 +134,30 @@ public class MainActivity extends Activity {
     private void initPressedCategoryButton() {
         Button button = (Button) this.findViewById(pressedCategoryButton);
         button.setPressed(true);
+    }
+
+    private List<ToDoItem> loadData() {
+        List<ToDoItem> toDoItems = new ArrayList<ToDoItem>();
+        ToDoDAO toDoDAO = new ToDoDAO(this);
+        List<ToDo> toDos = toDoDAO.findOrderByCreated();
+        MemoDAO memoDAO = new MemoDAO(this);
+        for (ToDo toDo : toDos) {
+            ToDoItem toDoItem = new ToDoItem();
+            toDoItem.id = toDo.getId();
+            toDoItem.created = toDo.getCreated();
+            toDoItem.finished = toDo.getFinished();
+            Memo memo = memoDAO.findFirstByToDoId(toDoItem.id);
+            toDoItem.digest = memo.getContent();
+            toDoItems.add(toDoItem);
+        }
+        return toDoItems;
+    }
+
+    private void initToDoList() {
+        List<ToDoItem> data = loadData();
+        ToDoAdapter adapter = new ToDoAdapter(this, data);
+        toDoListView = (ListView) this.findViewById(R.id.list_todo);
+        toDoListView.setAdapter(adapter);
     }
 
     class CategoryButtonsClickListener implements OnTouchListener {

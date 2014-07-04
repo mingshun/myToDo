@@ -1,11 +1,18 @@
 package com.gutspot.apps.android.mytodo;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import com.gutspot.apps.android.mytodo.adapter.MemoAdapter;
+import com.gutspot.apps.android.mytodo.dao.MemoDAO;
+import com.gutspot.apps.android.mytodo.model.Memo;
 
 public class ToDoActivity extends Activity {
 
@@ -23,6 +30,8 @@ public class ToDoActivity extends Activity {
             this.finish();
             return;
         }
+
+        initMemoList();
     }
 
     @Override
@@ -54,6 +63,14 @@ public class ToDoActivity extends Activity {
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void initMemoList() {
+        MemoDAO memoDAO = new MemoDAO(this);
+        List<Memo> memos = memoDAO.findByToDoId(toDoId);
+        MemoAdapter adapter = new MemoAdapter(this, memos);
+        ListView memoListView = (ListView) this.findViewById(R.id.list_memo);
+        memoListView.setAdapter(adapter);
     }
 
 }

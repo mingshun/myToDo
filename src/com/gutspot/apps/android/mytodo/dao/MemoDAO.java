@@ -1,6 +1,7 @@
 package com.gutspot.apps.android.mytodo.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,6 +23,24 @@ public class MemoDAO extends AbstractDAO<Memo> {
         super(context, TABLE_NAME);
     }
 
+    public Memo findFirstByToDoId(long toDoId) {
+        String selection = COLUMN_TODO_ID + "=?";
+        String[] selectionArgs = new String[] { String.valueOf(toDoId) };
+        String orderBy = COLUMN_CREATED + " asc";
+        String limit = "1";
+        List<Memo> memos = this.find(selection, selectionArgs, null, null, orderBy, limit);
+        if (memos.size() == 0) {
+            return null;
+        }
+        return memos.get(0);
+    }
+
+    public List<Memo> findByToDoId(long toDoId) {
+        String selection = COLUMN_TODO_ID + "=?";
+        String[] selectionArgs = new String[] { String.valueOf(toDoId) };
+        return this.find(selection, selectionArgs);
+    }
+
     @Override
     protected ContentValues createValues(Memo entity, boolean create) {
         ContentValues values = new ContentValues();
@@ -39,7 +58,7 @@ public class MemoDAO extends AbstractDAO<Memo> {
 
     @Override
     protected Memo parseValuse(Cursor cursor) {
-        Memo memo = new Memo();
+        Memo memo = new Memo(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
 
         memo.setToDoId(cursor.getLong(cursor.getColumnIndex(COLUMN_TODO_ID)));
         memo.setContent(cursor.getString(cursor.getColumnIndex(COLUMN_CONTENT)));

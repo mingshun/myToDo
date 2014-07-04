@@ -78,9 +78,14 @@ public abstract class AbstractDAO<T extends AbstractEntity> {
 
     public List<T> find(String selection, String[] selectionArgs,
             String groupBy, String having, String orderBy) {
+        return this.find(selection, selectionArgs, groupBy, having, orderBy, null);
+    }
+
+    public List<T> find(String selection, String[] selectionArgs,
+            String groupBy, String having, String orderBy, String limit) {
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.query(tableName, null, selection, selectionArgs,
-                groupBy, having, orderBy);
+                groupBy, having, orderBy, limit);
 
         List<T> entities = new ArrayList<T>();
         while (cursor.moveToNext()) {

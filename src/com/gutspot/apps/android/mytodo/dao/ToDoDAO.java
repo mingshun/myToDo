@@ -1,6 +1,7 @@
 package com.gutspot.apps.android.mytodo.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -19,6 +20,11 @@ public class ToDoDAO extends AbstractDAO<ToDo> {
         super(context, TABLE_NAME);
     }
 
+    public List<ToDo> findOrderByCreated() {
+        String orderBy = COLUMN_CREATED + " asc";
+        return this.find(null, null, null, null, orderBy);
+    }
+
     @Override
     protected ContentValues createValues(ToDo entity, boolean create) {
         ContentValues values = new ContentValues();
@@ -26,18 +32,27 @@ public class ToDoDAO extends AbstractDAO<ToDo> {
         if (create) {
             values.put(COLUMN_CREATED, entity.getCreated().getTime());
         }
-        Long finished = entity.getFinished() == null ? null : entity.getFinished().getTime();
-        values.put(COLUMN_FINISHED, finished);
+        
+        if (entity.getFinished() == null) {
+            values.put(COLUMN_FINISHED, -1);
+        } else {
+            values.put(COLUMN_FINISHED, entity.getFinished().getTime());
+        }
 
         return values;
     }
 
     @Override
     protected ToDo parseValuse(Cursor cursor) {
-        ToDo toDo = new ToDo();
+        ToDo toDo = new ToDo(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
 
         toDo.setCreated(new Date(cursor.getLong(cursor.getColumnIndex(COLUMN_CREATED))));
-        toDo.setFinished(new Date(cursor.getLong(cursor.getColumnIndex(COLUMN_FINISHED))));
+        long finished = cursor.getLong(cursor.getColumnIndex(COLUMN_FINISHED));
+        if (finished == -1) {
+            toDo.setFinished(null);
+        } else {
+            toDo.setFinished(new Date(finished));
+        }
 
         return toDo;
     }

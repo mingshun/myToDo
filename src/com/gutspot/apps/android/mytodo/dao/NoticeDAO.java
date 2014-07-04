@@ -31,7 +31,7 @@ public class NoticeDAO extends AbstractDAO<Notice> {
 
     @Override
     protected Notice parseValuse(Cursor cursor) {
-        Notice notice = new Notice();
+        Notice notice = new Notice(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
 
         notice.setToDoId(cursor.getLong(cursor.getColumnIndex(COLUMN_TODO_ID)));
         notice.setTime(new Date(cursor.getLong(cursor.getColumnIndex(COLUMN_TIME))));
