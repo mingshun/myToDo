@@ -112,7 +112,7 @@ public class MainActivity extends Activity implements OnTouchListener {
         int id = item.getItemId();
         switch (id) {
         case R.id.action_add_todo:
-            Intent addToDoMemoIntent = new Intent(this, AddToDoMemoActivity.class);
+            Intent addToDoMemoIntent = new Intent(this, MemoActivity.class);
             addToDoMemoIntent.putExtra("type", 1);
             startActivity(addToDoMemoIntent);
             return true;
@@ -187,11 +187,11 @@ public class MainActivity extends Activity implements OnTouchListener {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Activity mainActivity = MainActivity.this;
+                Activity activity = MainActivity.this;
                 ToDoItem item = (ToDoItem) adapter.getItem(position);
-                Intent intent = new Intent(mainActivity, ToDoActivity.class);
+                Intent intent = new Intent(activity, ToDoActivity.class);
                 intent.putExtra("todo_id", item.id);
-                mainActivity.startActivity(intent);
+                activity.startActivity(intent);
             }
         });
     }

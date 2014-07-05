@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.gutspot.apps.android.mytodo.AddToDoMemoActivity"
+            android:name="com.gutspot.apps.android.mytodo.MemoActivity"
             android:label="@string/title_activity_add_to_do"
             android:parentActivityName="com.gutspot.apps.android.mytodo.ToDoActivity" >
             <meta-data

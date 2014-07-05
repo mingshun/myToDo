@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -54,7 +57,7 @@ public class ToDoActivity extends Activity {
             return true;
 
         case R.id.action_add_memo:
-            Intent addMemoIntent = new Intent(this, AddToDoMemoActivity.class);
+            Intent addMemoIntent = new Intent(this, MemoActivity.class);
             addMemoIntent.putExtra("type", 2);
             addMemoIntent.putExtra("todo_id", toDoId);
             startActivity(addMemoIntent);
@@ -68,9 +71,22 @@ public class ToDoActivity extends Activity {
     private void initMemoList() {
         MemoDAO memoDAO = new MemoDAO(this);
         List<Memo> memos = memoDAO.findByToDoId(toDoId);
-        MemoAdapter adapter = new MemoAdapter(this, memos);
+        final MemoAdapter adapter = new MemoAdapter(this, memos);
         ListView memoListView = (ListView) this.findViewById(R.id.list_memo);
         memoListView.setAdapter(adapter);
+        memoListView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Activity activity = ToDoActivity.this;
+                Memo memo = (Memo) adapter.getItem(position);
+                Intent intent = new Intent(activity, MemoActivity.class);
+                intent.putExtra("type", 3);
+                intent.putExtra("todo_id", toDoId);
+                intent.putExtra("memo_id", memo.getId());
+                activity.startActivity(intent);
+            }
+        });
     }
 
 }

@@ -22,19 +22,26 @@ import com.gutspot.apps.android.mytodo.model.Memo;
 import com.gutspot.apps.android.mytodo.model.ToDo;
 import com.gutspot.apps.android.mytodo.utils.AlertUtil;
 
-public class AddToDoMemoActivity extends Activity {
+public class MemoActivity extends Activity {
+
+    private static final int[] textColorButtonIds = new int[] { R.id.button_text_color_black,
+            R.id.button_text_color_red, R.id.button_text_color_green, R.id.button_text_color_blue };
+    private static final int[] backgroundButtonIds = new int[] { R.id.button_background_color_yellow,
+            R.id.button_background_color_orage, R.id.button_background_color_red,
+            R.id.button_background_color_green, R.id.button_background_color_blue };
 
     private int pressedTextColorButtonId = R.id.button_text_color_black;
     private int pressedBackgroundButtonId = R.id.button_background_color_yellow;
 
     private int type;
-    private String name;
+    private String title;
     private long toDoId;
+    private long memoId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_to_do_memo);
+        setContentView(R.layout.activity_memo);
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -43,12 +50,19 @@ public class AddToDoMemoActivity extends Activity {
         type = intent.getIntExtra("type", -1);
         switch (type) {
         case 1:
-            name = "ToDo";
+            title = "添加ToDo";
             toDoId = -1;
             break;
+
         case 2:
-            name = "Memo";
+            title = "添加Memo";
             toDoId = intent.getLongExtra("todo_id", -1);
+            break;
+
+        case 3:
+            title = "编辑Memo";
+            toDoId = intent.getLongExtra("todo_id", -1);
+            memoId = intent.getLongExtra("memo_id", -1);
             break;
 
         default:
@@ -57,22 +71,35 @@ public class AddToDoMemoActivity extends Activity {
             return;
         }
 
-        this.setTitle("添加" + name);
+        this.setTitle(title);
 
         setColorButtonListeners();
-        initPressedColorButton();
+
+        switch (type) {
+        case 1:
+        case 2:
+            initPressedColorButton();
+            break;
+
+        case 3:
+            findView();
+            break;
+
+        default:
+        }
+
     }
 
     @Override
     public void onBackPressed() {
-        String message = "是否放弃保存" + name + "？";
+        String message = "是否放弃保存？";
 
         String yesLabel = "是";
         DialogInterface.OnClickListener yesListener = new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                AddToDoMemoActivity.this.finish();
+                MemoActivity.this.finish();
             }
         };
 
@@ -118,17 +145,12 @@ public class AddToDoMemoActivity extends Activity {
     }
 
     private void setColorButtonListeners() {
-        int[] textColorButtonIds = new int[] { R.id.button_text_color_black, R.id.button_text_color_red,
-                R.id.button_text_color_green, R.id.button_text_color_blue };
         OnClickListener changeTextColorListener = new ChangeTextColorListener(textColorButtonIds);
         for (int textColorButtonId : textColorButtonIds) {
             ImageButton textColorButton = (ImageButton) this.findViewById(textColorButtonId);
             textColorButton.setOnClickListener(changeTextColorListener);
         }
 
-        int[] backgroundButtonIds = new int[] { R.id.button_background_color_yellow,
-                R.id.button_background_color_orage, R.id.button_background_color_red,
-                R.id.button_background_color_green, R.id.button_background_color_blue };
         OnClickListener changeBackgroundColorListener = new ChangeBackgroundColorListener(backgroundButtonIds);
         for (int backgroundButtonId : backgroundButtonIds) {
             ImageButton backgroundButton = (ImageButton) this.findViewById(backgroundButtonId);
@@ -145,9 +167,68 @@ public class AddToDoMemoActivity extends Activity {
         pressedBackgroundColorButton.setImageResource(R.drawable.ic_action_accept_light);
         ColorDrawable backgroundColor = (ColorDrawable) pressedBackgroundColorButton.getBackground();
 
-        EditText edit = (EditText) AddToDoMemoActivity.this.findViewById(R.id.edit_content);
+        EditText edit = (EditText) MemoActivity.this.findViewById(R.id.edit_content);
         edit.setTextColor(textColor.getColor());
         edit.setBackgroundColor(backgroundColor.getColor());
+    }
+
+    private void findView() {
+        MemoDAO memoDAO = new MemoDAO(this);
+        Memo memo = memoDAO.findById(memoId);
+
+        EditText edit = (EditText) this.findViewById(R.id.edit_content);
+        edit.setText(memo.getContent());
+        edit.setTextColor(memo.getTextColor());
+        edit.setBackgroundColor(memo.getBackgroundColor());
+
+        for (int buttonId : textColorButtonIds) {
+            ImageButton button = (ImageButton) this.findViewById(buttonId);
+            ColorDrawable color = (ColorDrawable) button.getBackground();
+            if (color.getColor() == memo.getTextColor()) {
+                button.setImageResource(R.drawable.ic_action_accept);
+            } else {
+                button.setImageResource(android.R.color.transparent);
+            }
+        }
+
+        for (int buttonId : backgroundButtonIds) {
+            ImageButton button = (ImageButton) this.findViewById(buttonId);
+            ColorDrawable color = (ColorDrawable) button.getBackground();
+            if (color.getColor() == memo.getBackgroundColor()) {
+                button.setImageResource(R.drawable.ic_action_accept_light);
+            } else {
+                button.setImageResource(android.R.color.transparent);
+            }
+        }
+    }
+
+    private void saveMemo() {
+        EditText edit = (EditText) this.findViewById(R.id.edit_content);
+        ColorDrawable backgroundDrawable = (ColorDrawable) edit.getBackground();
+
+        MemoDAO memoDAO = new MemoDAO(this);
+        Memo memo = null;
+        if (type == 3) {
+            memo = memoDAO.findById(memoId);
+        } else {
+            memo = new Memo();
+            memo.setCreated(new Date());
+        }
+        memo.setToDoId(toDoId);
+        memo.setContent(edit.getText().toString());
+        memo.setTextColor(edit.getCurrentTextColor());
+        memo.setBackgroundColor(backgroundDrawable.getColor());
+        long result = -1;
+        if (type == 3) {
+            result = memoDAO.update(memo);
+        } else {
+            result = memoDAO.create(memo);
+        }
+        if (result == -1) {
+            Toast.makeText(this, "保存Memo失败", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
     }
 
     private void saveData() {
@@ -164,33 +245,19 @@ public class AddToDoMemoActivity extends Activity {
             }
 
         case 2:
-            EditText edit = (EditText) this.findViewById(R.id.edit_content);
-            ColorDrawable backgroundDrawable = (ColorDrawable) edit.getBackground();
-            Memo memo = new Memo();
-            memo.setToDoId(toDoId);
-            memo.setContent(edit.getText().toString());
-            memo.setTextColor(edit.getCurrentTextColor());
-            memo.setBackgroundColor(backgroundDrawable.getColor());
-            memo.setCreated(new Date());
-            MemoDAO memoDAO = new MemoDAO(this);
-            long memoId = memoDAO.create(memo);
-            if (memoId == -1) {
-                Toast.makeText(this, "保存Memo失败", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }
+        case 3:
+            saveMemo();
 
         default:
 
         }
 
         finish();
-        Toast.makeText(this, "保存" + name + "成功", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, ToDoActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("todo_id", toDoId);
         this.startActivity(intent);
-
     }
 
     class ChangeTextColorListener implements OnClickListener {
@@ -207,13 +274,13 @@ public class AddToDoMemoActivity extends Activity {
             button.setImageResource(R.drawable.ic_action_accept);
             for (int buttonId : buttonIds) {
                 if (button.getId() != buttonId) {
-                    ImageButton b = (ImageButton) AddToDoMemoActivity.this.findViewById(buttonId);
+                    ImageButton b = (ImageButton) MemoActivity.this.findViewById(buttonId);
                     b.setImageResource(android.R.color.transparent);
                 }
             }
 
             ColorDrawable color = (ColorDrawable) button.getBackground();
-            EditText edit = (EditText) AddToDoMemoActivity.this.findViewById(R.id.edit_content);
+            EditText edit = (EditText) MemoActivity.this.findViewById(R.id.edit_content);
             edit.setTextColor(color.getColor());
             pressedTextColorButtonId = button.getId();
         }
@@ -233,13 +300,13 @@ public class AddToDoMemoActivity extends Activity {
             button.setImageResource(R.drawable.ic_action_accept_light);
             for (int buttonId : buttonIds) {
                 if (button.getId() != buttonId) {
-                    ImageButton b = (ImageButton) AddToDoMemoActivity.this.findViewById(buttonId);
+                    ImageButton b = (ImageButton) MemoActivity.this.findViewById(buttonId);
                     b.setImageResource(android.R.color.transparent);
                 }
             }
 
             ColorDrawable color = (ColorDrawable) button.getBackground();
-            EditText edit = (EditText) AddToDoMemoActivity.this.findViewById(R.id.edit_content);
+            EditText edit = (EditText) MemoActivity.this.findViewById(R.id.edit_content);
             edit.setBackgroundColor(color.getColor());
             pressedBackgroundButtonId = button.getId();
         }
