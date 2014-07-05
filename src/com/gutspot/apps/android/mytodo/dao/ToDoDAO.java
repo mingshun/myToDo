@@ -32,7 +32,7 @@ public class ToDoDAO extends AbstractDAO<ToDo> {
         if (create) {
             values.put(COLUMN_CREATED, entity.getCreated().getTime());
         }
-        
+
         if (entity.getFinished() == null) {
             values.put(COLUMN_FINISHED, -1);
         } else {

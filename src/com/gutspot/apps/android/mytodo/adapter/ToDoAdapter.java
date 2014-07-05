@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.gutspot.apps.android.mytodo.R;
@@ -59,6 +61,14 @@ public class ToDoAdapter extends BaseAdapter {
         } else {
             finishCheckBox.setChecked(true);
         }
+        finishCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+                // TODO Auto-generated method stub
+
+            }
+        });
         TextView digestTextView = holder.digestTextView;
         digestTextView.setText(item.digest);
 

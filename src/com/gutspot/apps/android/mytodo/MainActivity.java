@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -44,7 +46,9 @@ public class MainActivity extends Activity {
         setCategoryButtonListener();
         initPressedCategoryButton();
 
-        initToDoList();
+        toDoListView = (ListView) this.findViewById(R.id.list_todo);
+        List<ToDoItem> data = loadData();
+        updateToDoListView(data);
     }
 
     @Override
@@ -63,11 +67,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onRestart() {
         super.onRestart();
+
         initPressedCategoryButton();
         if (toDoListView != null) {
             List<ToDoItem> data = loadData();
-            ToDoAdapter adapter = new ToDoAdapter(this, data);
-            toDoListView.setAdapter(adapter);
+            updateToDoListView(data);
         }
 
         android.util.Log.d("MainActivity.onRestart", this.toString());
@@ -153,11 +157,21 @@ public class MainActivity extends Activity {
         return toDoItems;
     }
 
-    private void initToDoList() {
-        List<ToDoItem> data = loadData();
-        ToDoAdapter adapter = new ToDoAdapter(this, data);
-        toDoListView = (ListView) this.findViewById(R.id.list_todo);
+    private void updateToDoListView(List<ToDoItem> data) {
+        final ToDoAdapter adapter = new ToDoAdapter(this, data);
+
         toDoListView.setAdapter(adapter);
+        toDoListView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Activity mainActivity = MainActivity.this;
+                ToDoItem item = (ToDoItem) adapter.getItem(position);
+                Intent intent = new Intent(mainActivity, ToDoActivity.class);
+                intent.putExtra("todo_id", item.id);
+                mainActivity.startActivity(intent);
+            }
+        });
     }
 
     class CategoryButtonsClickListener implements OnTouchListener {
