@@ -25,6 +25,20 @@ public class ToDoDAO extends AbstractDAO<ToDo> {
         return this.find(null, null, null, null, orderBy);
     }
 
+    public List<ToDo> findUnfinishedOrderByCreated() {
+        String selection = COLUMN_FINISHED + "=?";
+        String[] selectionArgs = new String[] { String.valueOf(-1) };
+        String orderBy = COLUMN_CREATED + " asc";
+        return this.find(selection, selectionArgs, null, null, orderBy);
+    }
+
+    public List<ToDo> findFinishedOrderByCreated() {
+        String selection = COLUMN_FINISHED + ">?";
+        String[] selectionArgs = new String[] { String.valueOf(-1) };
+        String orderBy = COLUMN_CREATED + " asc";
+        return this.find(selection, selectionArgs, null, null, orderBy);
+    }
+
     @Override
     protected ContentValues createValues(ToDo entity, boolean create) {
         ContentValues values = new ContentValues();

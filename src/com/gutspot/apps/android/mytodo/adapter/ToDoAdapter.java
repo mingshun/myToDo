@@ -6,14 +6,15 @@ import java.util.List;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.gutspot.apps.android.mytodo.R;
+import com.gutspot.apps.android.mytodo.dao.ToDoDAO;
+import com.gutspot.apps.android.mytodo.model.ToDo;
 
 public class ToDoAdapter extends BaseAdapter {
 
@@ -54,21 +55,33 @@ public class ToDoAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        ToDoItem item = toDoItems.get(position);
-        CheckBox finishCheckBox = holder.finishCheckBox;
+        final ToDoItem item = toDoItems.get(position);
+        final CheckBox finishCheckBox = holder.finishCheckBox;
         if (item.finished == null) {
             finishCheckBox.setChecked(false);
         } else {
             finishCheckBox.setChecked(true);
         }
-        finishCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+        finishCheckBox.setOnClickListener(new OnClickListener() {
 
             @Override
-            public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
-                // TODO Auto-generated method stub
-
+            public void onClick(View view) {
+                finishCheckBox.setEnabled(false);
+                ToDoDAO toDoDAO = new ToDoDAO(context);
+                ToDo toDo = toDoDAO.findById(item.id);
+                if (toDo.getFinished() == null) {
+                    toDo.setFinished(new Date());
+                    finishCheckBox.setChecked(true);
+                } else {
+                    toDo.setFinished(null);
+                    finishCheckBox.setChecked(false);
+                }
+                toDoDAO.update(toDo);
+                finishCheckBox.setEnabled(true);
             }
         });
+
         TextView digestTextView = holder.digestTextView;
         digestTextView.setText(item.digest);
 

@@ -25,9 +25,11 @@ import com.gutspot.apps.android.mytodo.dao.ToDoDAO;
 import com.gutspot.apps.android.mytodo.model.Memo;
 import com.gutspot.apps.android.mytodo.model.ToDo;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnTouchListener {
 
-    private int pressedCategoryButton = R.id.button_unfinished_todo;
+    private static final int[] categoryButtonIds = new int[] { R.id.button_unfinished_todo, R.id.button_finished_todo,
+            R.id.button_all_todo };
+    private int pressedCategoryButtonId = categoryButtonIds[0];
     private boolean doubleBackToExitPressedOnce = false;
 
     private ListView toDoListView;
@@ -39,39 +41,37 @@ public class MainActivity extends Activity {
         android.util.Log.d("MainActivity", this.toString());
 
         if (savedInstanceState != null) {
-            pressedCategoryButton = savedInstanceState.getInt("pressed_category_button");
-            android.util.Log.d("MainActivity", "pressedCategoryButton: " + pressedCategoryButton);
+            pressedCategoryButtonId = savedInstanceState.getInt("pressed_category_button");
+            android.util.Log.d("MainActivity", "pressedCategoryButton: " + pressedCategoryButtonId);
         }
 
         setCategoryButtonListener();
-        initPressedCategoryButton();
+        setPressedCategoryButton();
 
         toDoListView = (ListView) this.findViewById(R.id.list_todo);
-        List<ToDoItem> data = loadData();
-        updateToDoListView(data);
+        updateToDoListView();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        pressedCategoryButton = savedInstanceState.getInt("pressed_category_button");
-        android.util.Log.d("MainActivity", "pressedCategoryButton: " + pressedCategoryButton);
+        pressedCategoryButtonId = savedInstanceState.getInt("pressed_category_button");
+        android.util.Log.d("MainActivity", "pressedCategoryButton: " + pressedCategoryButtonId);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("pressed_category_button", pressedCategoryButton);
+        outState.putInt("pressed_category_button", pressedCategoryButtonId);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
-        initPressedCategoryButton();
+        setPressedCategoryButton();
         if (toDoListView != null) {
-            List<ToDoItem> data = loadData();
-            updateToDoListView(data);
+            updateToDoListView();
         }
 
         android.util.Log.d("MainActivity.onRestart", this.toString());
@@ -126,25 +126,51 @@ public class MainActivity extends Activity {
 
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent event) {
+        for (int buttonId : categoryButtonIds) {
+            if (view.getId() != buttonId) {
+                Button button = (Button) this.findViewById(buttonId);
+                button.setPressed(false);
+            }
+        }
+        ((Button) view).setPressed(true);
+        pressedCategoryButtonId = view.getId();
+        updateToDoListView();
+        return true;
+    }
+
     private void setCategoryButtonListener() {
-        int[] buttonIds = new int[] { R.id.button_unfinished_todo, R.id.button_finished_todo, R.id.button_all_todo };
-        OnTouchListener listener = new CategoryButtonsClickListener(buttonIds);
-        for (int buttonId : buttonIds) {
+        for (int buttonId : categoryButtonIds) {
             Button button = (Button) this.findViewById(buttonId);
-            button.setOnTouchListener(listener);
+            button.setOnTouchListener(this);
         }
     }
 
-    private void initPressedCategoryButton() {
-        Button button = (Button) this.findViewById(pressedCategoryButton);
+    private void setPressedCategoryButton() {
+        Button button = (Button) this.findViewById(pressedCategoryButtonId);
         button.setPressed(true);
     }
 
-    private List<ToDoItem> loadData() {
+    private void updateToDoListView() {
         List<ToDoItem> toDoItems = new ArrayList<ToDoItem>();
         ToDoDAO toDoDAO = new ToDoDAO(this);
-        List<ToDo> toDos = toDoDAO.findOrderByCreated();
         MemoDAO memoDAO = new MemoDAO(this);
+
+        List<ToDo> toDos = new ArrayList<ToDo>();
+        switch (pressedCategoryButtonId) {
+        case R.id.button_unfinished_todo:
+            toDos = toDoDAO.findUnfinishedOrderByCreated();
+            break;
+        case R.id.button_finished_todo:
+            toDos = toDoDAO.findFinishedOrderByCreated();
+            break;
+        case R.id.button_all_todo:
+            toDos = toDoDAO.findOrderByCreated();
+            break;
+        default:
+        }
+
         for (ToDo toDo : toDos) {
             ToDoItem toDoItem = new ToDoItem();
             toDoItem.id = toDo.getId();
@@ -154,12 +180,8 @@ public class MainActivity extends Activity {
             toDoItem.digest = memo.getContent();
             toDoItems.add(toDoItem);
         }
-        return toDoItems;
-    }
 
-    private void updateToDoListView(List<ToDoItem> data) {
-        final ToDoAdapter adapter = new ToDoAdapter(this, data);
-
+        final ToDoAdapter adapter = new ToDoAdapter(this, toDoItems);
         toDoListView.setAdapter(adapter);
         toDoListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -172,28 +194,6 @@ public class MainActivity extends Activity {
                 mainActivity.startActivity(intent);
             }
         });
-    }
-
-    class CategoryButtonsClickListener implements OnTouchListener {
-
-        private int[] buttonIds;
-
-        public CategoryButtonsClickListener(int[] buttonIds) {
-            this.buttonIds = buttonIds;
-        }
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            for (int buttonId : buttonIds) {
-                if (v.getId() != buttonId) {
-                    Button button = (Button) MainActivity.this.findViewById(buttonId);
-                    button.setPressed(false);
-                }
-            }
-            ((Button) v).setPressed(true);
-            pressedCategoryButton = v.getId();
-            return true;
-        }
     }
 
 }
