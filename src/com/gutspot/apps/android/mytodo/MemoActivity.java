@@ -92,6 +92,18 @@ public class MemoActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        // Check if the memo has been modified.
+        // If not, skip displaying the confirm dialog.
+        if (type == 3) {
+            MemoDAO memoDAO = new MemoDAO(this);
+            Memo memo = memoDAO.findById(memoId);
+            EditText edit = (EditText) this.findViewById(R.id.edit_content);
+            if (memo.getContent().equals(edit.getText().toString())) {
+                this.finish();
+                return;
+            }
+        }
+
         String message = "是否放弃保存？";
 
         String yesLabel = "是";
