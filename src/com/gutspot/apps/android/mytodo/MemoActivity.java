@@ -95,14 +95,9 @@ public class MemoActivity extends Activity {
     public void onBackPressed() {
         // Check if the memo has been modified.
         // If not, skip displaying the confirm dialog.
-        if (type == 3) {
-            MemoDAO memoDAO = new MemoDAO(this);
-            Memo memo = memoDAO.findById(memoId);
-            EditText edit = (EditText) this.findViewById(R.id.edit_content);
-            if (memo.getContent().equals(edit.getText().toString())) {
-                this.finish();
-                return;
-            }
+        if (type == 3 && !memoChanged()) {
+            this.finish();
+            return;
         }
 
         String message = "是否放弃保存？";
@@ -274,6 +269,27 @@ public class MemoActivity extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("todo_id", toDoId);
         this.startActivity(intent);
+    }
+
+    private boolean memoChanged() {
+        MemoDAO memoDAO = new MemoDAO(this);
+        Memo memo = memoDAO.findById(memoId);
+
+        EditText edit = (EditText) this.findViewById(R.id.edit_content);
+        if (!(memo.getContent().equals(edit.getText().toString()))) {
+            return true;
+        }
+        if (memo.getTextColor() != edit.getCurrentTextColor()) {
+            return true;
+        }
+
+        ScrollView editView = (ScrollView) this.findViewById(R.id.view_content);
+        ColorDrawable backgroundDrawable = (ColorDrawable) editView.getBackground();
+        if (memo.getBackgroundColor() != backgroundDrawable.getColor()) {
+            return true;
+        }
+
+        return false;
     }
 
     class ChangeTextColorListener implements OnClickListener {
