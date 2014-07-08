@@ -118,16 +118,23 @@
             android:contentDescription="@string/background_color_blue" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/edit_content"
+    <ScrollView
+        android:id="@+id/view_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/layout_background_color"
-        android:gravity="top|left"
-        android:hint="@string/new_todo_content_input_hint"
-        android:padding="5dp"
-        android:scrollHorizontally="false"
-        android:textSize="20sp" />
+        android:layout_below="@+id/layout_background_color" >
+
+        <EditText
+            android:id="@+id/edit_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="top|left"
+            android:hint="@string/new_todo_content_input_hint"
+            android:padding="5dp"
+            android:scrollHorizontally="false"
+            android:textSize="20sp" />
+    </ScrollView>
 
 </RelativeLayout>

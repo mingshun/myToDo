@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.gutspot.apps.android.mytodo.dao.MemoDAO;
@@ -181,7 +182,8 @@ public class MemoActivity extends Activity {
 
         EditText edit = (EditText) MemoActivity.this.findViewById(R.id.edit_content);
         edit.setTextColor(textColor.getColor());
-        edit.setBackgroundColor(backgroundColor.getColor());
+        ScrollView editView = (ScrollView) this.findViewById(R.id.view_content);
+        editView.setBackgroundColor(backgroundColor.getColor());
     }
 
     private void findView() {
@@ -191,7 +193,8 @@ public class MemoActivity extends Activity {
         EditText edit = (EditText) this.findViewById(R.id.edit_content);
         edit.setText(memo.getContent());
         edit.setTextColor(memo.getTextColor());
-        edit.setBackgroundColor(memo.getBackgroundColor());
+        ScrollView editView = (ScrollView) this.findViewById(R.id.view_content);
+        editView.setBackgroundColor(memo.getBackgroundColor());
 
         for (int buttonId : textColorButtonIds) {
             ImageButton button = (ImageButton) this.findViewById(buttonId);
@@ -216,7 +219,8 @@ public class MemoActivity extends Activity {
 
     private void saveMemo() {
         EditText edit = (EditText) this.findViewById(R.id.edit_content);
-        ColorDrawable backgroundDrawable = (ColorDrawable) edit.getBackground();
+        ScrollView editView = (ScrollView) this.findViewById(R.id.view_content);
+        ColorDrawable backgroundDrawable = (ColorDrawable) editView.getBackground();
 
         MemoDAO memoDAO = new MemoDAO(this);
         Memo memo = null;
@@ -318,8 +322,8 @@ public class MemoActivity extends Activity {
             }
 
             ColorDrawable color = (ColorDrawable) button.getBackground();
-            EditText edit = (EditText) MemoActivity.this.findViewById(R.id.edit_content);
-            edit.setBackgroundColor(color.getColor());
+            ScrollView editView = (ScrollView) MemoActivity.this.findViewById(R.id.view_content);
+            editView.setBackgroundColor(color.getColor());
             pressedBackgroundButtonId = button.getId();
         }
 
