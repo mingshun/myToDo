@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.gutspot.apps.android.mytodo.MainActivity;
 import com.gutspot.apps.android.mytodo.R;
 import com.gutspot.apps.android.mytodo.dao.ToDoDAO;
 import com.gutspot.apps.android.mytodo.model.ToDo;
@@ -42,7 +44,7 @@ public class ToDoAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -57,7 +59,7 @@ public class ToDoAdapter extends BaseAdapter {
 
         final ToDoItem item = toDoItems.get(position);
         final CheckBox finishCheckBox = holder.finishCheckBox;
-        if (item.finished == null) {
+        if (item.toDo.getFinished() == null) {
             finishCheckBox.setChecked(false);
         } else {
             finishCheckBox.setChecked(true);
@@ -67,18 +69,23 @@ public class ToDoAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View view) {
-                finishCheckBox.setEnabled(false);
                 ToDoDAO toDoDAO = new ToDoDAO(context);
-                ToDo toDo = toDoDAO.findById(item.id);
-                if (toDo.getFinished() == null) {
-                    toDo.setFinished(new Date());
+                ToDoItem item = (ToDoItem) getItem(position);
+                if (item.toDo.getFinished() == null) {
+                    item.toDo.setFinished(new Date());
                     finishCheckBox.setChecked(true);
                 } else {
-                    toDo.setFinished(null);
+                    item.toDo.setFinished(null);
                     finishCheckBox.setChecked(false);
                 }
-                toDoDAO.update(toDo);
-                finishCheckBox.setEnabled(true);
+                int result = toDoDAO.update(item.toDo);
+                if (result == -1) {
+                    Toast.makeText(context, "设置ToDo状态失败", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "设置ToDo状态成功", Toast.LENGTH_SHORT).show();
+                }
+
+                ((MainActivity) context).updateToDoListView();
             }
         });
 
@@ -94,9 +101,7 @@ public class ToDoAdapter extends BaseAdapter {
     }
 
     public static class ToDoItem {
-        public long id;
-        public Date created;
-        public Date finished;
+        public ToDo toDo;
         public String digest;
     }
 }
