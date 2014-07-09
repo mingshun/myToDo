@@ -15,14 +15,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gutspot.apps.android.mytodo.adapter.ToDoAdapter;
@@ -33,11 +33,14 @@ import com.gutspot.apps.android.mytodo.model.Memo;
 import com.gutspot.apps.android.mytodo.model.ToDo;
 import com.gutspot.apps.android.mytodo.utils.AlertUtil;
 
-public class MainActivity extends Activity implements OnTouchListener {
+public class MainActivity extends Activity {
 
-    private static final int[] categoryButtonIds = new int[] { R.id.button_unfinished_todo, R.id.button_finished_todo,
-            R.id.button_all_todo };
-    private int pressedCategoryButtonId = categoryButtonIds[0];
+    private static final String[] categories = new String[] { "未完成", "已完成", "全部" };
+    private static final String[] sortMethods = new String[] { "创建时间 - 升序", "创建时间 - 降序", "完成时间 - 升序", "完成时间 - 降序" };
+
+    private int currentCategory = 0;
+    private int currentSortMethod = 0;
+
     private boolean doubleBackToExitPressedOnce = false;
 
     private ListView toDoListView;
@@ -49,12 +52,47 @@ public class MainActivity extends Activity implements OnTouchListener {
         android.util.Log.d("MainActivity", this.toString());
 
         if (savedInstanceState != null) {
-            pressedCategoryButtonId = savedInstanceState.getInt("pressed_category_button");
-            android.util.Log.d("MainActivity", "pressedCategoryButton: " + pressedCategoryButtonId);
+            currentCategory = savedInstanceState.getInt("current_category");
+            currentSortMethod = savedInstanceState.getInt("current_sort_method");
         }
 
-        setCategoryButtonListener();
-        setPressedCategoryButton();
+        Spinner categorySpinner = (Spinner) this.findViewById(R.id.spinner_category);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+                categories);
+        categorySpinner.setAdapter(categoryAdapter);
+        categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentCategory = position;
+                updateToDoListView();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        Spinner sortMethodSpinner = (Spinner) this.findViewById(R.id.spinner_sort_method);
+        ArrayAdapter<String> sortMethodAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+                sortMethods);
+        sortMethodSpinner.setAdapter(sortMethodAdapter);
+        sortMethodSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentSortMethod = position;
+                updateToDoListView();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
 
         toDoListView = (ListView) this.findViewById(R.id.list_todo);
         updateToDoListView();
@@ -63,21 +101,21 @@ public class MainActivity extends Activity implements OnTouchListener {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        pressedCategoryButtonId = savedInstanceState.getInt("pressed_category_button");
-        android.util.Log.d("MainActivity", "pressedCategoryButton: " + pressedCategoryButtonId);
+        currentCategory = savedInstanceState.getInt("current_category");
+        currentSortMethod = savedInstanceState.getInt("current_sort_method");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("pressed_category_button", pressedCategoryButtonId);
+        outState.putInt("current_category", currentCategory);
+        outState.putInt("current_sort_method", currentSortMethod);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
-        setPressedCategoryButton();
         if (toDoListView != null) {
             updateToDoListView();
         }
@@ -106,7 +144,6 @@ public class MainActivity extends Activity implements OnTouchListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -134,46 +171,20 @@ public class MainActivity extends Activity implements OnTouchListener {
 
     }
 
-    @Override
-    public boolean onTouch(View view, MotionEvent event) {
-        for (int buttonId : categoryButtonIds) {
-            if (view.getId() != buttonId) {
-                Button button = (Button) this.findViewById(buttonId);
-                button.setPressed(false);
-            }
-        }
-        ((Button) view).setPressed(true);
-        pressedCategoryButtonId = view.getId();
-        updateToDoListView();
-        return true;
-    }
-
-    private void setCategoryButtonListener() {
-        for (int buttonId : categoryButtonIds) {
-            Button button = (Button) this.findViewById(buttonId);
-            button.setOnTouchListener(this);
-        }
-    }
-
-    private void setPressedCategoryButton() {
-        Button button = (Button) this.findViewById(pressedCategoryButtonId);
-        button.setPressed(true);
-    }
-
     private void updateToDoListView() {
         List<ToDoItem> toDoItems = new ArrayList<ToDoItem>();
         ToDoDAO toDoDAO = new ToDoDAO(this);
         MemoDAO memoDAO = new MemoDAO(this);
 
         List<ToDo> toDos = new ArrayList<ToDo>();
-        switch (pressedCategoryButtonId) {
-        case R.id.button_unfinished_todo:
+        switch (currentCategory) {
+        case 0:
             toDos = toDoDAO.findUnfinishedOrderByCreated();
             break;
-        case R.id.button_finished_todo:
+        case 1:
             toDos = toDoDAO.findFinishedOrderByCreated();
             break;
-        case R.id.button_all_todo:
+        case 2:
             toDos = toDoDAO.findOrderByCreated();
             break;
         default:

@@ -1,56 +1,35 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.gutspot.apps.android.mytodo.MainActivity"
     tools:ignore="MergeRootFrame" >
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/layout_main_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
 
-        <Button
-            android:id="@+id/button_unfinished_todo"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="-5dp"
-            android:layout_marginRight="-5dp"
-            android:text="@string/unfinished" />
+        <Spinner
+            android:id="@+id/spinner_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/button_finished_todo"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="-5dp"
-            android:layout_marginRight="-5dp"
-            android:layout_toRightOf="@+id/button_unfinished_todo"
-            android:text="@string/finished" />
-
-        <Button
-            android:id="@+id/button_all_todo"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="-5dp"
-            android:layout_toRightOf="@+id/button_finished_todo"
-            android:text="@string/all" />
-
-        <ImageButton
-            android:id="@+id/button_sort"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="-5dp"
-            android:contentDescription="@string/sort"
-            android:src="@drawable/ic_action_collapse_light" />
-    </RelativeLayout>
+        <Spinner
+            android:id="@+id/spinner_sort_method"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/list_todo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/layout_main_top" />
 
-</LinearLayout>
+</RelativeLayout>
