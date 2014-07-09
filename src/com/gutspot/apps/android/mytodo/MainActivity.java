@@ -52,8 +52,8 @@ public class MainActivity extends Activity {
         }
 
         Spinner categorySpinner = (Spinner) this.findViewById(R.id.spinner_category);
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
-                categories);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, R.layout.item_spinner, categories);
+        categoryAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         categorySpinner.setAdapter(categoryAdapter);
         categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -71,8 +71,8 @@ public class MainActivity extends Activity {
         });
 
         Spinner sortMethodSpinner = (Spinner) this.findViewById(R.id.spinner_sort_method);
-        ArrayAdapter<String> sortMethodAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
-                sortMethods);
+        ArrayAdapter<String> sortMethodAdapter = new ArrayAdapter<String>(this, R.layout.item_spinner, sortMethods);
+        sortMethodAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         sortMethodSpinner.setAdapter(sortMethodAdapter);
         sortMethodSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
