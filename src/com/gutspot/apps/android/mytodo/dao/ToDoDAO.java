@@ -41,7 +41,7 @@ public class ToDoDAO extends AbstractDAO<ToDo> {
 
     @Override
     protected ContentValues createValues(ToDo entity, boolean create) {
-        ContentValues values = new ContentValues();
+        ContentValues values = super.createValues(entity, create);
 
         if (create) {
             values.put(COLUMN_CREATED, entity.getCreated().getTime());
@@ -58,7 +58,8 @@ public class ToDoDAO extends AbstractDAO<ToDo> {
 
     @Override
     protected ToDo parseValuse(Cursor cursor) {
-        ToDo toDo = new ToDo(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
+        ToDo toDo = new ToDo(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)),
+                cursor.getLong(cursor.getColumnIndex(COLUMN_VERSION)));
 
         toDo.setCreated(new Date(cursor.getLong(cursor.getColumnIndex(COLUMN_CREATED))));
         long finished = cursor.getLong(cursor.getColumnIndex(COLUMN_FINISHED));

@@ -18,8 +18,8 @@ public class ToDo extends AbstractEntity {
 
     }
 
-    public ToDo(long id) {
-        super(id);
+    public ToDo(long id, long version) {
+        super(id, version);
     }
 
     public Date getCreated() {

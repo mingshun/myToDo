@@ -41,9 +41,15 @@ public class MemoDAO extends AbstractDAO<Memo> {
         return this.find(selection, selectionArgs);
     }
 
+    public int removeByToDoId(long toDoId) {
+        String selection = COLUMN_TODO_ID + "=?";
+        String[] selectionArgs = new String[] { String.valueOf(toDoId) };
+        return remove(selection, selectionArgs);
+    }
+
     @Override
     protected ContentValues createValues(Memo entity, boolean create) {
-        ContentValues values = new ContentValues();
+        ContentValues values = super.createValues(entity, create);
 
         values.put(COLUMN_TODO_ID, entity.getToDoId());
         values.put(COLUMN_CONTENT, entity.getContent());
@@ -58,7 +64,8 @@ public class MemoDAO extends AbstractDAO<Memo> {
 
     @Override
     protected Memo parseValuse(Cursor cursor) {
-        Memo memo = new Memo(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
+        Memo memo = new Memo(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)),
+                cursor.getLong(cursor.getColumnIndex(COLUMN_VERSION)));
 
         memo.setToDoId(cursor.getLong(cursor.getColumnIndex(COLUMN_TODO_ID)));
         memo.setContent(cursor.getString(cursor.getColumnIndex(COLUMN_CONTENT)));

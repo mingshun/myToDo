@@ -1,6 +1,7 @@
 package com.gutspot.apps.android.mytodo.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -13,6 +14,7 @@ import com.gutspot.apps.android.mytodo.utils.DBOpenHelper;
 
 public abstract class AbstractDAO<T extends AbstractEntity> {
     protected static final String COLUMN_ID = "_id";
+    protected static final String COLUMN_VERSION = "version";
 
     private DBOpenHelper helper;
     private String tableName;
@@ -36,7 +38,7 @@ public abstract class AbstractDAO<T extends AbstractEntity> {
 
     public int update(T entity) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues values = this.createValues(entity);
+        ContentValues values = this.createValues(entity, false);
         String selection = COLUMN_ID + "=?";
         String[] selectionArgs = new String[] { String.valueOf(entity.getId()) };
         int result = db.update(tableName, values, selection, selectionArgs);
@@ -45,9 +47,13 @@ public abstract class AbstractDAO<T extends AbstractEntity> {
     }
 
     public int remove(long id) {
-        SQLiteDatabase db = helper.getWritableDatabase();
         String selection = COLUMN_ID + "=?";
         String[] selectionArgs = new String[] { String.valueOf(id) };
+        return remove(selection, selectionArgs);
+    }
+
+    public int remove(String selection, String[] selectionArgs) {
+        SQLiteDatabase db = helper.getWritableDatabase();
         int result = db.delete(tableName, selection, selectionArgs);
         db.close();
         return result;
@@ -96,11 +102,11 @@ public abstract class AbstractDAO<T extends AbstractEntity> {
         return entities;
     }
 
-    protected ContentValues createValues(T entity) {
-        return this.createValues(entity, false);
+    protected ContentValues createValues(T entity, boolean create) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_VERSION, new Date().getTime());
+        return values;
     }
-
-    protected abstract ContentValues createValues(T entity, boolean create);
 
     protected abstract T parseValuse(Cursor cursor);
 }

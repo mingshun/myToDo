@@ -18,8 +18,8 @@ public class Notice extends AbstractEntity {
 
     }
 
-    public Notice(long id) {
-        super(id);
+    public Notice(long id, long version) {
+        super(id, version);
     }
 
     public long getToDoId() {

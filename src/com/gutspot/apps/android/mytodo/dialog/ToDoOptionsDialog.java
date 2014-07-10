@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import com.gutspot.apps.android.mytodo.MainActivity;
 import com.gutspot.apps.android.mytodo.ToDoActivity;
+import com.gutspot.apps.android.mytodo.dao.MemoDAO;
 import com.gutspot.apps.android.mytodo.dao.ToDoDAO;
 import com.gutspot.apps.android.mytodo.utils.AlertUtil;
 
@@ -67,6 +68,9 @@ public class ToDoOptionsDialog extends DialogFragment implements OnClickListener
             public void onClick(DialogInterface dialog, int which) {
                 ToDoDAO toDoDAO = new ToDoDAO(context);
                 toDoDAO.remove(toDoId);
+                MemoDAO memoDAO = new MemoDAO(context);
+                memoDAO.removeByToDoId(toDoId);
+                // TODO: Remove all related notice
                 ((MainActivity) context).updateToDoListView();
             }
         };

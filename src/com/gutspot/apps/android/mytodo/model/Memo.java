@@ -32,8 +32,8 @@ public class Memo extends AbstractEntity {
 
     }
 
-    public Memo(long id) {
-        super(id);
+    public Memo(long id, long version) {
+        super(id, version);
     }
 
     public long getToDoId() {
