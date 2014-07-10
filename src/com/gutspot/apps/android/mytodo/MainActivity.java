@@ -3,6 +3,8 @@ package com.gutspot.apps.android.mytodo;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -14,10 +16,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gutspot.apps.android.mytodo.adapter.ToDoAdapter;
@@ -28,13 +28,11 @@ import com.gutspot.apps.android.mytodo.dialog.ToDoOptionsDialog;
 import com.gutspot.apps.android.mytodo.model.Memo;
 import com.gutspot.apps.android.mytodo.model.ToDo;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnNavigationListener {
 
-    private static final String[] categories = new String[] { "未完成", "已完成", "全部" };
-    private static final String[] sortMethods = new String[] { "创建时间 - 升序", "创建时间 - 降序", "完成时间 - 升序", "完成时间 - 降序" };
+    private static final String[] categories = new String[] { "待办", "完成", "全部" };
 
     private int currentCategory = 0;
-    private int currentSortMethod = 0;
 
     private boolean doubleBackToExitPressedOnce = false;
 
@@ -48,46 +46,13 @@ public class MainActivity extends Activity {
 
         if (savedInstanceState != null) {
             currentCategory = savedInstanceState.getInt("current_category");
-            currentSortMethod = savedInstanceState.getInt("current_sort_method");
         }
 
-        Spinner categorySpinner = (Spinner) this.findViewById(R.id.spinner_category);
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, R.layout.item_spinner, categories);
-        categoryAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-        categorySpinner.setAdapter(categoryAdapter);
-        categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentCategory = position;
-                updateToDoListView();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        Spinner sortMethodSpinner = (Spinner) this.findViewById(R.id.spinner_sort_method);
-        ArrayAdapter<String> sortMethodAdapter = new ArrayAdapter<String>(this, R.layout.item_spinner, sortMethods);
-        sortMethodAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-        sortMethodSpinner.setAdapter(sortMethodAdapter);
-        sortMethodSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentSortMethod = position;
-                updateToDoListView();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
+        ActionBar actionBar = this.getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        ArrayAdapter<String> actionBarSpinnerAdapter = new ArrayAdapter<String>(actionBar.getThemedContext(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, categories);
+        actionBar.setListNavigationCallbacks(actionBarSpinnerAdapter, this);
 
         toDoListView = (ListView) this.findViewById(R.id.list_todo);
         updateToDoListView();
@@ -97,14 +62,12 @@ public class MainActivity extends Activity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         currentCategory = savedInstanceState.getInt("current_category");
-        currentSortMethod = savedInstanceState.getInt("current_sort_method");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("current_category", currentCategory);
-        outState.putInt("current_sort_method", currentSortMethod);
     }
 
     @Override
@@ -164,6 +127,13 @@ public class MainActivity extends Activity {
             return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        currentCategory = itemPosition;
+        updateToDoListView();
+        return true;
     }
 
     public void updateToDoListView() {
