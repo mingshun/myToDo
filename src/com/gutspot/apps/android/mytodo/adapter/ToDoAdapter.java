@@ -80,9 +80,9 @@ public class ToDoAdapter extends BaseAdapter {
                 }
                 int result = toDoDAO.update(item.toDo);
                 if (result == -1) {
-                    Toast.makeText(context, "设置ToDo状态失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "ToDo状态设置失败", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "设置ToDo状态成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "ToDo状态设置成功", Toast.LENGTH_SHORT).show();
                 }
 
                 ((MainActivity) context).updateToDoListView();

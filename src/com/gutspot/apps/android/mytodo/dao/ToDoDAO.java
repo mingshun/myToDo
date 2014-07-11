@@ -28,22 +28,22 @@ public class ToDoDAO extends AbstractDAO<ToDo> {
     public List<ToDo> findUnfinishedOrderByCreated() {
         String selection = COLUMN_FINISHED + "=?";
         String[] selectionArgs = new String[] { String.valueOf(-1) };
-        String orderBy = COLUMN_CREATED + " asc";
+        String orderBy = COLUMN_CREATED + " ASC";
         return this.find(selection, selectionArgs, null, null, orderBy);
     }
 
     public List<ToDo> findFinishedOrderByCreated() {
         String selection = COLUMN_FINISHED + ">?";
         String[] selectionArgs = new String[] { String.valueOf(-1) };
-        String orderBy = COLUMN_CREATED + " asc";
+        String orderBy = COLUMN_FINISHED + " DESC";
         return this.find(selection, selectionArgs, null, null, orderBy);
     }
 
     @Override
-    protected ContentValues createValues(ToDo entity, boolean create) {
-        ContentValues values = super.createValues(entity, create);
+    protected ContentValues createValues(ToDo entity, ContectValuesState state) {
+        ContentValues values = super.createValues(entity, state);
 
-        if (create) {
+        if (state == ContectValuesState.CREATE) {
             values.put(COLUMN_CREATED, entity.getCreated().getTime());
         }
 

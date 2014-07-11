@@ -13,6 +13,12 @@ import com.gutspot.apps.android.mytodo.model.AbstractEntity;
 import com.gutspot.apps.android.mytodo.utils.DBOpenHelper;
 
 public abstract class AbstractDAO<T extends AbstractEntity> {
+    protected enum ContectValuesState {
+        CREATE,
+        UDPATE,
+        SYNC
+    }
+
     protected static final String COLUMN_ID = "_id";
     protected static final String COLUMN_VERSION = "version";
 
@@ -30,7 +36,7 @@ public abstract class AbstractDAO<T extends AbstractEntity> {
 
     public long create(T entity) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues values = this.createValues(entity, true);
+        ContentValues values = this.createValues(entity, ContectValuesState.CREATE);
         long id = db.insert(tableName, null, values);
         db.close();
         return id;
@@ -38,7 +44,17 @@ public abstract class AbstractDAO<T extends AbstractEntity> {
 
     public int update(T entity) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues values = this.createValues(entity, false);
+        ContentValues values = this.createValues(entity, ContectValuesState.UDPATE);
+        String selection = COLUMN_ID + "=?";
+        String[] selectionArgs = new String[] { String.valueOf(entity.getId()) };
+        int result = db.update(tableName, values, selection, selectionArgs);
+        db.close();
+        return result;
+    }
+
+    public int sync(T entity) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues values = this.createValues(entity, ContectValuesState.SYNC);
         String selection = COLUMN_ID + "=?";
         String[] selectionArgs = new String[] { String.valueOf(entity.getId()) };
         int result = db.update(tableName, values, selection, selectionArgs);
@@ -102,11 +118,17 @@ public abstract class AbstractDAO<T extends AbstractEntity> {
         return entities;
     }
 
-    protected ContentValues createValues(T entity, boolean create) {
+    protected ContentValues createValues(T entity, ContectValuesState state) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_VERSION, new Date().getTime());
+        if (state == ContectValuesState.SYNC) {
+            values.put(COLUMN_VERSION, entity.getVersion());
+        } else {
+            values.put(COLUMN_VERSION, new Date().getTime());
+        }
+
         return values;
     }
 
     protected abstract T parseValuse(Cursor cursor);
+
 }

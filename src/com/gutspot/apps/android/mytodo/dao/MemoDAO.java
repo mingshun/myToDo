@@ -48,14 +48,14 @@ public class MemoDAO extends AbstractDAO<Memo> {
     }
 
     @Override
-    protected ContentValues createValues(Memo entity, boolean create) {
-        ContentValues values = super.createValues(entity, create);
+    protected ContentValues createValues(Memo entity, ContectValuesState state) {
+        ContentValues values = super.createValues(entity, state);
 
         values.put(COLUMN_TODO_ID, entity.getToDoId());
         values.put(COLUMN_CONTENT, entity.getContent());
         values.put(COLUMN_TEXT_COLOR, entity.getTextColor());
         values.put(COLUMN_BACKGROUND_COLOR, entity.getBackgroundColor());
-        if (create) {
+        if (state == ContectValuesState.CREATE) {
             values.put(COLUMN_CREATED, entity.getCreated().getTime());
         }
 

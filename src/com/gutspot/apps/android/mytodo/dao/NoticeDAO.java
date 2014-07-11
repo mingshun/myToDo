@@ -20,8 +20,8 @@ public class NoticeDAO extends AbstractDAO<Notice> {
     }
 
     @Override
-    protected ContentValues createValues(Notice entity, boolean create) {
-        ContentValues values = super.createValues(entity, create);
+    protected ContentValues createValues(Notice entity, ContectValuesState state) {
+        ContentValues values = super.createValues(entity, state);
 
         values.put(COLUMN_TODO_ID, entity.getToDoId());
         values.put(COLUMN_TIME, entity.getTime().getTime());

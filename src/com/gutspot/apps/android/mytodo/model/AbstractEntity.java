@@ -1,6 +1,6 @@
 package com.gutspot.apps.android.mytodo.model;
 
-public class AbstractEntity {
+public abstract class AbstractEntity {
     private Long id;
 
     private long version;
