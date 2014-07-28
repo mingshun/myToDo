@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.gutspot.apps.android.mytodo.adapter.MemoAdapter;
 import com.gutspot.apps.android.mytodo.dao.MemoDAO;
+import com.gutspot.apps.android.mytodo.dialog.DateTimeDialog;
 import com.gutspot.apps.android.mytodo.dialog.MemoOptionsDialog;
 import com.gutspot.apps.android.mytodo.model.Memo;
 
@@ -67,6 +68,11 @@ public class ToDoActivity extends Activity {
             addMemoIntent.putExtra("type", 2);
             addMemoIntent.putExtra("todo_id", toDoId);
             startActivity(addMemoIntent);
+            return true;
+
+        case R.id.action_alert:
+            DialogFragment dateTimeDialog = DateTimeDialog.newInstance(this);
+            dateTimeDialog.show(this.getFragmentManager(), "dialog");
             return true;
 
         default:

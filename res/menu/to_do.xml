@@ -8,9 +8,9 @@
         android:showAsAction="always"
         android:title="@string/action_add_memo"/>
     <item
-        android:id="@+id/action_show_alerts"
+        android:id="@+id/action_alert"
         android:icon="@drawable/ic_action_time"
         android:showAsAction="always"
-        android:title="@string/action_show_alerts"/>
+        android:title="@string/action_alert"/>
 
 </menu>
