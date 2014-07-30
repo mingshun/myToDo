@@ -26,5 +26,6 @@
     <string name="action_add_memo">添加Memo</string>
     <string name="action_alert">提醒</string>
     <string name="todo_digest">todo摘要</string>
+    <string name="text_colon">:</string>
 
 </resources>

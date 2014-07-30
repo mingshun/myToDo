@@ -6,14 +6,41 @@
     android:orientation="vertical" >
 
     <DatePicker
-        android:id="@+id/date_picker"
+        android:id="@+id/picker_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:calendarViewShown="false" />
 
-    <TimePicker
-        android:id="@+id/time_picker"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:gravity="center" >
+
+        <NumberPicker
+            android:id="@+id/picker_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+        <TextView
+            android:id="@+id/text_colon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/picker_hour"
+            android:text="@string/text_colon"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <NumberPicker
+            android:id="@+id/picker_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@+id/text_colon" />
+    </RelativeLayout>
 
 </LinearLayout>
