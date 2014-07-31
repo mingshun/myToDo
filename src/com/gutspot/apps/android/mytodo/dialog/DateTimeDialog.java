@@ -1,6 +1,7 @@
 package com.gutspot.apps.android.mytodo.dialog;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 import android.app.Activity;
@@ -20,11 +21,14 @@ import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 
 import com.gutspot.apps.android.mytodo.R;
+import com.gutspot.apps.android.mytodo.dao.NoticeDAO;
+import com.gutspot.apps.android.mytodo.model.Notice;
+import com.gutspot.apps.android.mytodo.utils.DateTimeUtil;
 
 public class DateTimeDialog extends DialogFragment implements OnDateChangedListener, OnValueChangeListener {
-    private static final long MILLISECOND_OF_A_DAY = 24 * 60 * 60 * 1000;
-
     private Context context;
+
+    private long toDoId;
 
     private DatePicker datePicker;
     private NumberPicker hourPicker;
@@ -58,8 +62,17 @@ public class DateTimeDialog extends DialogFragment implements OnDateChangedListe
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
+                int year = datePicker.getYear();
+                int month = datePicker.getMonth();
+                int day = datePicker.getDayOfMonth();
+                int hour = hourPicker.getValue();
+                int minute = minutePicker.getValue();
 
+                Notice notice = new Notice();
+                notice.setToDoId(toDoId);
+                notice.setTime(new Date(DateTimeUtil.millisecondOf(year, month, day, hour, minute)));
+                NoticeDAO noticeDAO = new NoticeDAO(context);
+                noticeDAO.create(notice);
             }
         };
         String noLabel = "取消";
@@ -67,8 +80,7 @@ public class DateTimeDialog extends DialogFragment implements OnDateChangedListe
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-
+                dialog.cancel();
             }
         };
 
@@ -84,17 +96,16 @@ public class DateTimeDialog extends DialogFragment implements OnDateChangedListe
     }
 
     private void initPickers() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getDefault());
-        long now = calendar.getTimeInMillis();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+        Calendar now = Calendar.getInstance();
+        now.setTimeZone(TimeZone.getDefault());
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH);
+        int day = now.get(Calendar.DAY_OF_MONTH);
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        int minute = now.get(Calendar.MINUTE);
 
         datePicker.init(year, month, day, this);
-        datePicker.setMinDate(now / MILLISECOND_OF_A_DAY * MILLISECOND_OF_A_DAY);
+        datePicker.setMinDate(DateTimeUtil.millisecondOf(year, month, day));
 
         hourPicker.setMinValue(hour);
         hourPicker.setMaxValue(23);
@@ -109,32 +120,28 @@ public class DateTimeDialog extends DialogFragment implements OnDateChangedListe
         minutePicker.setOnValueChangedListener(this);
     }
 
+    public void setToDoId(long toDoId) {
+        this.toDoId = toDoId;
+    }
+
     @Override
     public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        Calendar nowCalendar = Calendar.getInstance();
-        nowCalendar.setTimeZone(TimeZone.getDefault());
-        long nowTime = nowCalendar.getTimeInMillis();
-        long nowMillisecondOfDay = nowTime / MILLISECOND_OF_A_DAY * MILLISECOND_OF_A_DAY;
+        Calendar now = Calendar.getInstance();
+        now.setTimeZone(TimeZone.getDefault());
+        long nowMillisecond = DateTimeUtil.millisecondOf(now.get(Calendar.YEAR), now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
 
-        Calendar currentCalendar = Calendar.getInstance();
-        currentCalendar.setTimeZone(TimeZone.getDefault());
-        currentCalendar.set(year, monthOfYear, dayOfMonth);
-        long currentTime = currentCalendar.getTimeInMillis();
-        long currentMillisecondOfDay = currentTime / MILLISECOND_OF_A_DAY * MILLISECOND_OF_A_DAY;
+        long selectMillisecond = DateTimeUtil.millisecondOf(year, monthOfYear, dayOfMonth);
 
-        android.util.Log.d("onDateChanged", "" + nowMillisecondOfDay + ", " + currentMillisecondOfDay);
+        android.util.Log.d("onDateChanged", "" + nowMillisecond + ", " + selectMillisecond);
 
-        if (currentMillisecondOfDay > nowMillisecondOfDay) {
+        if (selectMillisecond > nowMillisecond) {
             hourPicker.setMinValue(0);
-            hourPicker.setWrapSelectorWheel(true);
-
             minutePicker.setMinValue(0);
-            minutePicker.setWrapSelectorWheel(true);
         } else {
-            hourPicker.setMinValue(nowCalendar.get(Calendar.HOUR_OF_DAY));
+            hourPicker.setMinValue(now.get(Calendar.HOUR_OF_DAY));
             hourPicker.setWrapSelectorWheel(false);
-
-            minutePicker.setMinValue(nowCalendar.get(Calendar.MINUTE));
+            minutePicker.setMinValue(now.get(Calendar.MINUTE));
             minutePicker.setWrapSelectorWheel(false);
         }
 
